@@ -1,0 +1,20 @@
+{
+  "name": "my_project",
+  "version": "0.0.0",
+  "authors": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize.css": "*",
+    "reset-css": "*",
+    "jquery1": "jquery#1",
+    "jquery2": "jquery#2",
+    "bootstrap": "*"
+  }
+}
