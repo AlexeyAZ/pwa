@@ -11,7 +11,7 @@ var gulp = require('gulp'),
     pngquant = require('imagemin-pngquant'), // сжатие png изображений //
     del = require('del'), // права на удаление папок и файлов //
     browserSync = require("browser-sync"), // обновление окна браузера
-    csso = require('gulp-csso') // сжатие css
+    cssnano = require('gulp-cssnano') // сжатие css
 ;
 var path = {
     //Готовые после сборки файлы
@@ -77,7 +77,7 @@ gulp.task('less:build', function () {
         .pipe(sourcemaps.init()) //То же самое что и с js
         .pipe(less())
         .pipe(prefixer())
-        .pipe(csso())
+        .pipe(cssnano())
         .pipe(sourcemaps.write("."))
         .pipe(gulp.dest(path.build.css)) //И в build
         .pipe(reload({stream: true}));
