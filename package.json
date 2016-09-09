@@ -6,6 +6,7 @@
   "license": "ISC",
   "main": "gulpfile.js",
   "scripts": {
+    "start": "gulp",
     "prestart": "npm install",
     "postinstall": "bower install"
   },
