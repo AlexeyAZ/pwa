@@ -1,0 +1,40 @@
+* {
+    box-sizing: border-box;
+    &:before {
+        box-sizing: border-box;
+    }
+    &:after {
+        box-sizing: border-box;
+    }
+}
+html {
+    font-family: "Roboto", sans-serif;
+    overflow: hidden;
+    height: 100%;
+}
+body {
+    height: 100%;
+}
+.main {
+    background-color: @bg-main;
+    overflow: hidden;
+    height: @height-main;
+}
+.wrapper {
+    overflow: auto;
+    height: 100%;
+}
+.container {
+    margin: 0 auto;
+    max-width: @width-max;
+    min-width: @width-min;
+    padding: 30px;
+    height: 100%;
+}
+.card {
+    background-color: white;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 
+                0 3px 1px -2px rgba(0, 0, 0, 0.2), 
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    height: 100%;
+}
