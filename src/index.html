@@ -16,24 +16,39 @@
       <meta name="msapplication-TileImage" content="img/icons/icon-144x144.png">
       <meta name="msapplication-TileColor" content="#2F3BA2">
 
-      <link rel="stylesheet" href="css/main.css" />
+      <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
 
       //= template/header.html
 
-      <main class="main">
-        <div class="wrapper">
-          <div class="container">
-            <div class="card">
-              <p class="time"></p>
+      <main class="content" id="content">
+        <div class="container">
+          <div class="card">
+            <div class="card__col card__col_day">
+              <p class="card__weekday">ПН</p>
+              <p class="card__date">09.12.2016</p>
+            </div>
+            <div class="card__col card__col_icon">
+              <i class="wi wi-night-sleet"></i>
+            </div>
+            <div class="card__col card__col_temperature">
+              <span class="card__temperature card__temperature_day">+68</span>/
+              <span class="card__temperature card__temperature_night">-35</span>
+              <span class="card__temperature-unit">C</span>
             </div>
           </div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
+          <div class="card"></div>
         </div>
       </main>
 
       //= template/footer.html
-      
+
       <script src="js/main.js" defer></script>
   </body>
 </html>

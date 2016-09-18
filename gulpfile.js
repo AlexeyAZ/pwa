@@ -30,7 +30,7 @@ var path = {
         html: 'src/*.html',
         manifest: 'src/manifest.json',
         js: 'src/js/main.js',
-        less: 'src/less/main.less',
+        less: 'src/less/style.less',
         img: 'src/img/**/*.*',
         fonts: 'src/fonts/**/*.*'
     },
