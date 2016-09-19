@@ -44,18 +44,51 @@ body {
     height: 13%;
     width: 100%;
 }
-.card__col_day {
+.card__item {
+    display: flex;
+}
+.card__item_day {
     text-align: center;
 }
+.card__day {
+    //display: flex;
+    //flex-wrap: wrap;
+}
 .card__weekday {
-    font-size: 5.6vmin;
+    font-size: 5vh;
 }
 .card__date {
-    font-size: 2.6vmin;
+    font-size: 2vh;
 }
-.card__col_icon {
-    font-size: 5.6vmin;
+.card__icon {
+    display: flex;
+    align-items: center;
+    font-size: 5.5vh;
+    margin-right: 10px;
 }
-.card__col_temperature {
-    font-size: 1.6em;
+.card__item_weather {
+    display: flex;
+    align-items: center;
+    font-size: 2.4vh;
+}
+.card__temperature-container {
+    display: flex;
+}
+.card__temperature {
+    position: relative;
+    &:after {
+        content: "";
+        border: 1px solid;
+        border-radius: 50%;
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 2px;
+        height: 0.3em;
+        width: 0.3em;
+    }
+}
+.card__temperature_night {
+    &:before {
+        content: "/";
+    }
 }

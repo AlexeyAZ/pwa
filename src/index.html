@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
   		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>PWA</title>
+      <!--<link rel="canonical" href="https://weather-pwa-sample.firebaseapp.com/final/">-->
       <!-- Add to home screen for Android -->
       <link rel="manifest" href="manifest.json">
       <!-- Add to home screen for Safari on iOS -->
@@ -15,7 +15,8 @@
       <!-- Add to home screen for WP -->
       <meta name="msapplication-TileImage" content="img/icons/icon-144x144.png">
       <meta name="msapplication-TileColor" content="#2F3BA2">
-
+      
+      <title>PWA</title>
       <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -23,31 +24,30 @@
       //= template/header.html
 
       <main class="content" id="content">
-        <div class="container">
-          <div class="card">
-            <div class="card__col card__col_day">
-              <p class="card__weekday">ПН</p>
-              <p class="card__date">09.12.2016</p>
-            </div>
-            <div class="card__col card__col_icon">
-              <i class="wi wi-night-sleet"></i>
-            </div>
-            <div class="card__col card__col_temperature">
-              <span class="card__temperature card__temperature_day">+68</span>/
-              <span class="card__temperature card__temperature_night">-35</span>
-              <span class="card__temperature-unit">C</span>
-            </div>
-          </div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-          <div class="card"></div>
-        </div>
+       
       </main>
 
       //= template/footer.html
+
+      <div id="cardTemplate">
+        <div class="card__item card__item_day">
+          <div class="card__day">
+              <p class="card__weekday"></p>
+              <p class="card__date"></p>
+          </div>
+          </div>
+          <div class="card__item card__item_icon">
+              <div class="card__icon">
+              <i class="wi wi-night-sleet"></i>
+              </div>
+          </div>
+          <div class="card__item card__item_weather">
+              <div class="card__temperature-container">
+                  <div class="card__temperature card__temperature_day"></div>
+                  <div class="card__temperature card__temperature_night"></div>
+              </div>
+          </div>
+      </div>
 
       <script src="js/main.js" defer></script>
   </body>
