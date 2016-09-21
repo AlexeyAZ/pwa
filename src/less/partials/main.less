@@ -13,9 +13,20 @@
 .card-template {
     display: none;
 }
+.clear-cache-btn {
+    background-color: green;
+    border-radius: 50%;
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    height: 40px;
+    width: 40px;
+    z-index: 10;
+}
 html {
     background-color: @bg-main;
     font-family: "Roboto", sans-serif;
+    font-weight: 400;
     overflow: hidden;
     position: relative;
     height: 100%;
@@ -24,6 +35,50 @@ body {
     overflow: hidden;
     position: relative;
     height: 100%;
+}
+.search-active {
+    .header__clear-btn {
+        display: block;
+    }
+    .header__input {
+        font-weight: 100;
+    }
+    .search-results {
+        opacity: 1;
+        z-index: 10;
+    }
+    .search-results__container {
+        transform: translateX(0);
+    }
+}
+
+//search-results
+.search-results {
+    transition: all 0.3s linear;
+    background-color: @bg-search-results;
+    overflow: hidden;
+    opacity: 0;
+    position: fixed;
+    top: @height-header;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
+}
+.search-results__container {
+    transition: all 0.3s linear;
+    transform: translateX(-100%);
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+    width: 80%;
+}
+.search-results__element {
+    font-size: 1.2em;
+    padding: 10px;
+    &:hover {
+        background-color: lighten(@bg-header, 30%);
+    }
 }
 .content {
     margin: 0 auto;

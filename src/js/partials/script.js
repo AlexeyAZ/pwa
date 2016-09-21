@@ -1,5 +1,7 @@
 ;(function($){
   $(function(){
+
+    
     // service worker
 
     /*
@@ -14,17 +16,26 @@
     }
     */
 
+    // Глобальные переменные
+    var header = $("#header");
+    var footer = $("#footer");
 
     // Ajax запрос на openweathermap
     function getWeatherObj() {
       $.ajax({
         url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=551487&units=metric&lang=ru&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
+        beforeSend: function() {
+          $("#refreshButton").addClass("footer__btn-refresh_animate");
+        },
         success: function(dataWeather) {
-          console.log(dataWeather);
           createCards(dataWeather);
+        },
+        complete: function() {
+          $("#refreshButton").removeClass("footer__btn-refresh_animate");
         }
       });
     };
+
 
     // Создать карточки
     function createCards(dataWeather) {
@@ -59,7 +70,6 @@
         if (("" + temp).slice(0, 1) != "-") {
           temp = "+" + temp;
         }
-        console.log(temp);
         return temp;
       }
 
@@ -107,14 +117,56 @@
       return time;
     }
 
-    $(window).resize(function(){
-      var windowHeight = window.innerHeight;
-      $("html").height(windowHeight);
 
-      console.log("windowHeight: " + window.innerHeight);
-      console.log("htmlHeight: " + $("body").height());
+    // Очистить кэш для приложения
+    $(document).on("click", "#clearCache", function(){
+      window.location.reload(true);
     });
 
+
+    // Клик по полю ввода города 
+    header.on("click", ".header__input", function() {
+      if($("body").hasClass("search-active")) {
+
+      } else {
+        $("body").addClass("search-active");
+      }
+    });
+
+
+    // Клик вне списка городов закрывает список
+    $("body").on("click", function(e) {
+      var self = $(e.target);
+      if (self.hasClass("search-results")) {
+        $("body").removeClass("search-active");
+        $(".header__input").blur();
+      }
+    });
+
+
+    // Клик по кнопке обновить
+    footer.on("click", "#refreshButton", function(){
+      getWeatherObj();
+    });
+
+
+    // Клик по элементу в списке городов
+    $(".search-results__element").click(function(){
+      console.log(true);
+    });
+
+
+    // Установить высоту контента, равную высоте окна браузера
+    function setContentHeight() {
+      var windowHeight = $(window).height();
+      $("html").height(windowHeight);
+    }
+
+    $(window).resize(function(){
+      
+    });
+
+    setContentHeight();
     getWeatherObj();
 
   });

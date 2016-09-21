@@ -8,7 +8,7 @@
     position: relative;
     height: @height-header;
     max-width: @width-max;
-    z-index: 1;
+    z-index: 11;
 }
 .header__search {
     height: @height-header-search;
@@ -23,10 +23,17 @@
     padding: 0 calc(@height-header-search + 25px) 0 15px; 
     height: 100%;
     width: 100%;
-    &:focus {
-        & + .header__clear-btn {
-            display: block;
-        }
+    &::-webkit-input-placeholder {
+        color: white;
+    }
+    &::-moz-placeholder {
+        color: white;
+    }
+    &:-moz-placeholder {
+        color: white;
+    }
+    &:-ms-input-placeholder {
+        color: white;
     }
 }
 .header__clear-btn {
