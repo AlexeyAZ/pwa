@@ -17,7 +17,7 @@ var path = {
     //Готовые после сборки файлы
     build: {
         html: 'build/',
-        manifest: 'build/',
+        json: 'build/',
         js: 'build/js/',
         css: 'build/css/',
         img: 'build/img/',
@@ -28,7 +28,7 @@ var path = {
         //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         //Синтаксис img/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
         html: 'src/*.html',
-        manifest: 'src/manifest.json',
+        json: 'src/*.json',
         js: 'src/js/main.js',
         less: 'src/less/style.less',
         img: 'src/img/**/*.*',
@@ -37,7 +37,7 @@ var path = {
     //За изменением каких файлов необходимо наблюдать
     watch: {
         html: 'src/**/*.html',
-        manifest: 'src/manifest.json',
+        json: 'src/*.json',
         js: 'src/js/**/*.js',
         less: 'src/less/**/*.less',
         img: 'src/img/**/*.*',
@@ -65,9 +65,9 @@ gulp.task('html:build', function () {
         .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
 });
 
-gulp.task('manifest:build', function () {
-    gulp.src(path.src.manifest) //Выберем файлы по нужному пути
-        .pipe(gulp.dest(path.build.manifest)) //Выплюнем их в папку build
+gulp.task('json:build', function () {
+    gulp.src(path.src.json) //Выберем файлы по нужному пути
+        .pipe(gulp.dest(path.build.json)) //Выплюнем их в папку build
         .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
 });
 
@@ -111,7 +111,7 @@ gulp.task('fonts:build', function() {
 
 gulp.task('build', [
     'html:build',
-    'manifest:build',
+    'json:build',
     'js:build',
     'less:build',
     'fonts:build',
@@ -122,8 +122,8 @@ gulp.task('watch', function(){
     watch([path.watch.html], function(event, cb) {
         gulp.start('html:build');
     });
-    watch([path.watch.manifest], function(event, cb) {
-        gulp.start('manifest:build');
+    watch([path.watch.json], function(event, cb) {
+        gulp.start('json:build');
     });
     watch([path.watch.less], function(event, cb) {
         gulp.start('less:build');

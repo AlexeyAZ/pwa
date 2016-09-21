@@ -1,7 +1,7 @@
 ;(function($){
   $(function(){
 
-    
+
     // service worker
 
     /*
@@ -16,6 +16,11 @@
     }
     */
 
+    // start
+
+    setContentHeight();
+    getWeatherObj();
+
     // Глобальные переменные
     var header = $("#header");
     var footer = $("#footer");
@@ -23,11 +28,12 @@
     // Ajax запрос на openweathermap
     function getWeatherObj() {
       $.ajax({
-        url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=551487&units=metric&lang=ru&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
+        url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=551487&units=metric&lang=ru&callback=&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
         beforeSend: function() {
           $("#refreshButton").addClass("footer__btn-refresh_animate");
         },
         success: function(dataWeather) {
+          console.log(dataWeather);
           createCards(dataWeather);
         },
         complete: function() {
@@ -39,7 +45,6 @@
 
     // Создать карточки
     function createCards(dataWeather) {
-
       var cardsNumber = dataWeather.list.length;
       var content = $("#content");
       var cards = '<div class="container" id="cardsContainer">';
@@ -50,12 +55,15 @@
 
       cards += '</div>';
       content.html(cards);
-      
+
       for (var i = 0; i < cardsNumber; i++) {
+
         var card = $("#cardsContainer").find(".card").eq(i);
         card.html($("#cardTemplate").html());
+
         setCardData(card, dataWeather);
       }
+      getWeatherIcon(dataWeather);
     };
 
 
@@ -93,6 +101,39 @@
     };
 
 
+    // ajax запрос на получение кода иконок
+    function getWeatherIcon(dataWeather) {
+      $.ajax({
+        url: "/weather/icons.json",
+        success: function(weatherIcons) {
+          createIcons(dataWeather, weatherIcons)
+        }
+      });
+    }
+
+
+    // Создать иконки
+    function createIcons(dataWeather, weatherIcons) {
+
+      var cardsNumber = dataWeather.list.length;
+
+      for (var i = 0; i < cardsNumber; i++) {
+
+        var card = $("#cardsContainer").find(".card").eq(i);
+        var prefix = 'wi wi-';
+        var code = dataWeather.list[i].weather[0].id;
+        var icon = weatherIcons[code].icon;
+
+        if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
+          icon = 'day-' + icon;
+        }
+
+        icon = prefix + icon;
+        card.find(".card__icon").addClass(icon);
+      }
+    }
+
+
     // Переводит время из системы UNIX в UTC
     function timeConverter(UNIX_timestamp){
       var a = new Date(UNIX_timestamp * 1000);
@@ -124,7 +165,7 @@
     });
 
 
-    // Клик по полю ввода города 
+    // Клик по полю ввода города
     header.on("click", ".header__input", function() {
       if($("body").hasClass("search-active")) {
 
@@ -163,11 +204,7 @@
     }
 
     $(window).resize(function(){
-      
+
     });
-
-    setContentHeight();
-    getWeatherObj();
-
   });
 })(jQuery);
