@@ -117,7 +117,7 @@
     // ajax запрос на получение кода иконок
     function getWeatherIcon(dataWeather) {
       $.ajax({
-        url: "/icons.json",
+        url: "/weather/icons.json",
         success: function(weatherIcons) {
           createIcons(dataWeather, weatherIcons);
         }
@@ -203,7 +203,8 @@
 
     // Клик по кнопке обновить
     footer.on("click", "#refreshButton", function(){
-      getWeatherObj();
+      var cityId = $(".header__input").attr("data-city-id");
+      getWeatherObj(cityId);
     });
 
 
@@ -224,11 +225,12 @@
       getWeatherObj(cityId);
       $("body").removeClass("search-active");
       $(".header__input").attr("placeholder", cityName);
+      $(".header__input").attr("data-city-id", cityId);
     });
 
     function getCityesData() {
       $.ajax({
-        url: "/cityes.json",
+        url: "/weather/cityes.json",
         success: function(cityesData) {
           createCityesList(cityesData);
         }
