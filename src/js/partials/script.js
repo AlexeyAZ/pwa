@@ -113,7 +113,7 @@
       $.ajax({
         url: "/icons.json",
         success: function(weatherIcons) {
-          createIcons(dataWeather, weatherIcons)
+          createIcons(dataWeather, weatherIcons);
         }
       });
     }
