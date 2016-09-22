@@ -113,6 +113,7 @@ body {
 }
 .card__item {
     display: flex;
+    width: 33.3%;
 }
 .card__item_day {
     text-align: center;
@@ -127,6 +128,9 @@ body {
 .card__date {
     font-size: 2vh;
 }
+.card__item_icon {
+    justify-content: center;
+}
 .card__icon-container {
     display: flex;
     align-items: center;
@@ -136,6 +140,7 @@ body {
 .card__item_weather {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     font-size: 2.4vh;
 }
 .card__temperature-container {
@@ -143,6 +148,7 @@ body {
 }
 .card__temperature {
     position: relative;
+    white-space: nowrap;
     &:after {
         content: "";
         border: 1px solid;

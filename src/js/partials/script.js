@@ -45,35 +45,40 @@
 
     // Создать карточки
     function createCards(dataWeather) {
-      var cardsNumber = dataWeather.list.length;
+
+      var numberCards = dataWeather.list.length;
       var content = $("#content");
       var cards = '<div class="container" id="cardsContainer">';
 
-      for (var i = 0; i < cardsNumber; i++) {
+      for (var i = 0; i < numberCards; i++) {
         cards += '<div class="card"></div>';
       };
 
       cards += '</div>';
       content.html(cards);
 
-      for (var i = 0; i < cardsNumber; i++) {
-
-        var card = $("#cardsContainer").find(".card").eq(i);
-        card.html($("#cardTemplate").html());
-
-        setCardData(card, dataWeather);
-      }
+      createCardsTemplate(numberCards);
+      createCardData(numberCards, dataWeather);
       getWeatherIcon(dataWeather);
     };
 
 
+    // Создать разметку в каждой карточке
+    function createCardsTemplate(numberCards) {
+     //var numberCards = $("#cardsContainer").find(".card").length;
+
+      for (var i = 0; i < numberCards; i++) {
+
+        var card = $("#cardsContainer").find(".card").eq(i);
+        card.html($("#cardTemplate").html());
+      }
+    }
+
+
     // Создать контент для карточек
-    function setCardData(card, dataWeather) {
+    function createCardData(numberCards, dataWeather) {
 
-      var cardNumber = card.index();
-      var dayTemp = setTempSign(Math.round(dataWeather.list[cardNumber].temp.day));
-      var nightTemp = setTempSign(Math.round(dataWeather.list[cardNumber].temp.night));
-
+      // Устанавливает знаки "+" и "-" перед значением температуры
       function setTempSign(temp) {
         if (("" + temp).slice(0, 1) != "-") {
           temp = "+" + temp;
@@ -81,30 +86,32 @@
         return temp;
       }
 
-      var time = timeConverter(dataWeather.list[cardNumber].dt);
-      var weekday = time.weekday;
-      var year = time.year;
-      var month = time.month;
+      for (var i = 0; i < numberCards; i++) {
 
-      if(("" + month).length == 1) {
-        month = "0" + month;
-      };
+        var card = $("#cardsContainer").find(".card").eq(i);
 
-      var day = time.day;
+        var dayTemp = setTempSign(Math.round(dataWeather.list[i].temp.day));
+        var nightTemp = setTempSign(Math.round(dataWeather.list[i].temp.night));
 
-      card.find(".card__temperature_day").text(dayTemp);
-      card.find(".card__temperature_night").text(nightTemp);
+        var time = timeConverter(dataWeather.list[i].dt);
+        var weekday = time.weekday;
+        var year = time.year;
+        var month = time.month;
+        var day = time.day;
 
-      card.find(".card__weekday").text(weekday);
-      card.find(".card__date").text(day + "." + month + "." + year);
+        card.find(".card__weekday").text(weekday);
+        card.find(".card__date").text(day + "." + month + "." + year);
 
+        card.find(".card__temperature_day").text(dayTemp);
+        card.find(".card__temperature_night").text(nightTemp);
+      }
     };
 
 
     // ajax запрос на получение кода иконок
     function getWeatherIcon(dataWeather) {
       $.ajax({
-        url: "/weather/icons.json",
+        url: "/icons.json",
         success: function(weatherIcons) {
           createIcons(dataWeather, weatherIcons)
         }
@@ -141,6 +148,10 @@
       var days = ["ВС","ПН","ВТ","СР","ЧТ","ПТ","СБ"];
       var year = a.getFullYear();
       var month = a.getMonth() + 1;
+      if (("" + month).length == 1) {
+        month = "0" + month;
+      };
+
       var weekday = days[a.getDay()];
       var day = a.getDate();
       var hour = a.getHours();
@@ -167,9 +178,7 @@
 
     // Клик по полю ввода города
     header.on("click", ".header__input", function() {
-      if($("body").hasClass("search-active")) {
-
-      } else {
+      if(!$("body").hasClass("search-active")) {
         $("body").addClass("search-active");
       }
     });
@@ -202,9 +211,5 @@
       var windowHeight = $(window).height();
       $("html").height(windowHeight);
     }
-
-    $(window).resize(function(){
-
-    });
   });
 })(jQuery);

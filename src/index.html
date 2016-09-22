@@ -1,65 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head lang="ru">
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-      <!--<link rel="canonical" href="https://weather-pwa-sample.firebaseapp.com/final/">-->
-      <!-- Add to home screen for Android -->
-      <link rel="manifest" href="manifest.json">
-      <!-- Add to home screen for Safari on iOS -->
-      <meta name="apple-mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-status-bar-style" content="black">
-      <meta name="apple-mobile-web-app-title" content="Weather PWA">
-      <link rel="apple-touch-icon" href="img/icons/icon-152x152.png">
-      <!-- Add to home screen for WP -->
-      <meta name="msapplication-TileImage" content="img/icons/icon-144x144.png">
-      <meta name="msapplication-TileColor" content="#2F3BA2">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!--<link rel="canonical" href="https://weather-pwa-sample.firebaseapp.com/final/">-->
+    <!-- Add to home screen for Android -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Add to home screen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Weather PWA">
+    <link rel="apple-touch-icon" href="img/icons/icon-152x152.png">
+    <!-- Add to home screen for WP -->
+    <meta name="msapplication-TileImage" content="img/icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#2F3BA2">
 
-      <title>PWA</title>
-      <link rel="stylesheet" href="css/style.css" />
+    <title>Weather</title>
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
 
-      <div class="clear-cache-btn" id="clearCache"></div>
+    <div class="clear-cache-btn" id="clearCache"></div>
 
-      //= template/header.html
+    //= template/header.html
 
-      <main class="content" id="content">
+    <main class="content" id="content">
 
-      </main>
+    </main>
 
-      <div class="search-results">
+    <div class="search-results">
         <div class="search-results__container">
-          <ul class="search-results__list">
+            <ul class="search-results__list">
             <li class="search-results__element">1</li>
             <li class="search-results__element">2</li>
-          </ul>
+            </ul>
         </div>
-      </div>
+    </div>
 
-      //= template/footer.html
+    //= template/footer.html
 
-      <div id="cardTemplate" class="card-template">
+    <div id="cardTemplate" class="card-template">
         <div class="card__item card__item_day">
-          <div class="card__day">
-              <p class="card__weekday"></p>
-              <p class="card__date"></p>
-          </div>
-          </div>
-          <div class="card__item card__item_icon">
-              <div class="card__icon-container">
+            <div class="card__day">
+                <p class="card__weekday"></p>
+                <p class="card__date"></p>
+            </div>
+        </div>
+        <div class="card__item card__item_icon">
+            <div class="card__icon-container">
                 <i class="card__icon"></i>
-              </div>
-          </div>
-          <div class="card__item card__item_weather">
-              <div class="card__temperature-container">
-                  <div class="card__temperature card__temperature_day"></div>
-                  <div class="card__temperature card__temperature_night"></div>
-              </div>
-          </div>
-      </div>
+            </div>
+        </div>
+        <div class="card__item card__item_weather">
+            <div class="card__temperature-container">
+                <div class="card__temperature card__temperature_day"></div>
+                <div class="card__temperature card__temperature_night"></div>
+            </div>
+        </div>
+    </div>
 
-      <script src="js/main.js" defer></script>
+    <script src="js/main.js" defer></script>
   </body>
 </html>
