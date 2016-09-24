@@ -16,7 +16,7 @@
     <meta name="msapplication-TileImage" content="img/icons/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#2F3BA2">
 
-    <title>Weather</title>
+    <title>WeatherApp</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -29,37 +29,34 @@
 
     //= template/header.html
 
-    <main class="content" id="content">
+    <main class="content" id="content"></main>
 
-    </main>
-
-    <div class="search-results">
+    <div class="search-results" id="searchResults">
         <div class="search-results__container">
-            <ul class="search-results__list">
-                <!--<li class="search-results__element">Казань</li>-->
-                <!--<li class="search-results__element">Москва</li>-->
-            </ul>
+            <ul class="search-results__list"></ul>
         </div>
     </div>
 
     //= template/footer.html
 
     <div id="cardTemplate" class="card-template">
-        <div class="card__item card__item_day">
-            <div class="card__day">
-                <p class="card__weekday"></p>
-                <p class="card__date"></p>
+        <div class="card">
+            <div class="card__item card__item_day">
+                <div class="card__day">
+                    <p class="card__weekday"></p>
+                    <p class="card__date"></p>
+                </div>
             </div>
-        </div>
-        <div class="card__item card__item_icon">
-            <div class="card__icon-container">
-                <i class="card__icon"></i>
+            <div class="card__item card__item_icon">
+                <div class="card__icon-container">
+                    <i class="card__icon"></i>
+                </div>
             </div>
-        </div>
-        <div class="card__item card__item_weather">
-            <div class="card__temperature-container">
-                <div class="card__temperature card__temperature_day"></div>
-                <div class="card__temperature card__temperature_night"></div>
+            <div class="card__item card__item_weather">
+                <div class="card__temperature-container">
+                    <div class="card__temperature card__temperature_day"></div>
+                    <div class="card__temperature card__temperature_night"></div>
+                </div>
             </div>
         </div>
     </div>
