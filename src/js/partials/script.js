@@ -40,24 +40,27 @@
     // start
 
     setContentHeight();
-    getWeatherObj();
+    getWeatherObj(); // delete
+    //getCityesData(); //add
 
 
     // Ajax запрос на openweathermap
     function getWeatherObj(cityId) {
 
+      // delete
       if (cityId === undefined) {
         cityId = kazanId;
-      };
+      }
 
       $.ajax({
+
         url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityId + "&units=metric&lang=ru&callback=&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
         beforeSend: function() {
-          
+
           if (iconsObj == null) {
             getWeatherIcons();
           };
-          
+          // delete
           if (cityesObj == null) {
             getCityesData();
           };
@@ -77,20 +80,6 @@
         }
       });
     };
-
-
-    // При получении данных с сервера иконка обновления начинает вращаться
-    function spinAnimate() {
-      var spin = $("#refreshButton");
-      if (spin.hasClass("footer__btn-refresh_animate")) {
-        spin.removeClass("footer__btn-refresh_animate");
-      } else {
-        spin.addClass("footer__btn-refresh_animate");
-      }
-    }
-
-
-    // Показать попап
 
 
     // Создать карточки
@@ -148,15 +137,6 @@
         icon = prefix + icon;
         card.find(".card__icon").addClass(icon);
       }
-    };
-
-
-    // Устанавливает знаки "+" и "-" перед значением температуры
-    function setTempSign(temp) {
-      if (("" + temp).slice(0, 1) != "-") {
-        temp = "+" + temp;
-      }
-      return temp;
     };
 
 
@@ -229,14 +209,14 @@
 
 
     // Клик по элементу в списке городов
-    
+
     $(".search-results__container").on("click", ".search-results__element", function() {
       var self = $(this);
-      sityElementClick(self);
+      sityListClick(self);
     });
 
 
-    function sityElementClick(city) {
+    function sityListClick(city) {
 
       var cityId = city.data("city-id");
       var cityName = city.text();
@@ -249,8 +229,12 @@
       $(".header__input").attr("placeholder", cityName);
       $(".header__input").attr("data-city-id", cityId);
     };
-    
-    
+
+
+    //
+    function setInputAttributes() {
+
+    }
 
     // Получить список городов
     function getCityesData() {
@@ -259,13 +243,22 @@
         success: function(cityesData) {
           console.log("данные о городах загружены успешно");
           cityesObj = cityesData;
+          //getWeatherObj(); // add
           createFullCityesList(cityesObj);
         },
         error: function() {
-          console.log("при загрузке данных о городах произошла ошибка"); 
+          console.log("при загрузке данных о городах произошла ошибка");
+        },
+        complete: function() {
+
         }
       });
     }
+
+
+    function setDefaultSity() {
+      cityId = cityesObj[1].id;
+    };
 
 
     //Создать список городов
@@ -290,6 +283,26 @@
 
       cityesList += '</ul>';
       searchResultsContainer.html(cityesList);
+    };
+
+
+    // Обновить приложение
+    $(document).on("click", "#clearCache", function(){
+      window.location.reload(true);
+    });
+
+
+    // Клик по кнопке обновить
+    footer.on("click", "#refreshButton", function(){
+      var cityId = $(".header__input").attr("data-city-id");
+      getWeatherObj(cityId);
+    });
+
+
+    // Установить высоту контента, равную высоте окна браузера
+    function setContentHeight() {
+      var windowHeight = $(window).height();
+      $("html").height(windowHeight);
     };
 
 
@@ -323,23 +336,26 @@
     };
 
 
-    // Обновить приложение
-    $(document).on("click", "#clearCache", function(){
-      window.location.reload(true);
-    });
+    // При получении данных с сервера иконка обновления начинает вращаться
+    function spinAnimate() {
+      var spin = $("#refreshButton");
+      if (spin.hasClass("footer__btn-refresh_animate")) {
+        spin.removeClass("footer__btn-refresh_animate");
+      } else {
+        spin.addClass("footer__btn-refresh_animate");
+      }
+    }
 
 
-    // Клик по кнопке обновить
-    footer.on("click", "#refreshButton", function(){
-      var cityId = $(".header__input").attr("data-city-id");
-      getWeatherObj(cityId);
-    });
+    // Показать попап
 
 
-    // Установить высоту контента, равную высоте окна браузера
-    function setContentHeight() {
-      var windowHeight = $(window).height();
-      $("html").height(windowHeight);
+    // Устанавливает знаки "+" и "-" перед значением температуры
+    function setTempSign(temp) {
+      if (("" + temp).slice(0, 1) != "-") {
+        temp = "+" + temp;
+      }
+      return temp;
     };
   });
 })(jQuery);
