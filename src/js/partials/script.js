@@ -19,11 +19,13 @@
     // Глобальные переменные
     var header = $("#header");
     var footer = $("#footer");
-    var kazanId = "551487";
     var searchResults = $("#searchResults");
+    var kazanId = "551487";
 
-    var cityesObj = null;
-    var iconsObj = null;
+    var fullCityesList = null;
+    var fullIconsList = null;
+    var defaultCity;
+    //var activeCity;
 
 
     // Проверка как открыт сайт - локально или на сервере
@@ -35,41 +37,71 @@
       } else {
         return "";
       }
-    }
+    };
 
     // start
-
     setContentHeight();
-    getWeatherObj(); // delete
-    //getCityesData(); //add
+    getCityesData();
+
+
+    // Получить список городов
+    function getCityesData() {
+
+      $.ajax({
+
+        url: isLocal() + "/cityes.json",
+        beforeSend: function() {
+          getWeatherIcons();
+        },
+        success: function(cityesData) {
+          console.log("список городов загружен успешно");
+          fullCityesList = cityesData;
+        },
+        error: function() {
+          console.log("при загрузке списка городов произошла ошибка");
+        },
+        complete: function() {
+          defaultCity = fullCityesList[0];
+
+          getWeatherData(defaultCity);
+          createFullCityesList(fullCityesList);
+        }
+      });
+    };
+
+
+    // ajax запрос на получение кода иконок
+    function getWeatherIcons() {
+
+      $.ajax({
+
+        url: isLocal() + "/icons.json",
+        success: function(weatherIcons) {
+          console.log("список иконок загружен успешно");
+          fullIconsList = weatherIcons;
+        },
+        error: function () {
+          console.log("при загрузке списка иконок произошла ошибка");
+        }
+      });
+    };
 
 
     // Ajax запрос на openweathermap
-    function getWeatherObj(cityId) {
+    function getWeatherData(city) {
 
-      // delete
-      if (cityId === undefined) {
-        cityId = kazanId;
-      }
+      var cityId = city.id;
 
       $.ajax({
 
         url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityId + "&units=metric&lang=ru&callback=&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
         beforeSend: function() {
-
-          if (iconsObj == null) {
-            getWeatherIcons();
-          };
-          // delete
-          if (cityesObj == null) {
-            getCityesData();
-          };
-
+          setInputAttributes(city);
           spinAnimate();
         },
         success: function(dataWeather) {
           console.log("данные о погоде загружены успешно");
-          console.log(dataWeather);
+          //console.log(dataWeather);
           createCards(dataWeather);
         },
         error: function () {
@@ -79,6 +111,60 @@
           spinAnimate();
         }
       });
+    };
+
+
+    // Установить дополнительные атрибуты полю ввода
+    function setInputAttributes(city) {
+      var input = header.find(".header__input");
+      input.val("");
+      input.attr("placeholder", city.nameRus);
+      input.attr("data-city-number", city.id);
+    };
+
+
+    //Создать полный список городов
+    function createFullCityesList(cityesData) {
+
+      var searchResultsContainer = searchResults.find(".search-results__container");
+      var cityesList =  '<ul class="search-results__list">'
+
+      for (var i = 0; i < cityesData.length; i++) {
+        cityesList += '<li class="search-results__element" data-city-number=' + i + '>' + cityesData[i].nameRus + '</li>';
+      };
+
+      cityesList += '</ul>';
+      searchResultsContainer.html(cityesList);
+    };
+
+
+    // Клик по элементу в списке городов
+
+    $(".search-results__container").on("click", ".search-results__element", function() {
+      var self = $(this);
+      sityListClick(self);
+    });
+
+
+    function sityListClick(cityElem) {
+
+      var cityNumber = cityElem.data("city-number");
+      var city = fullCityesList[cityNumber];
+      var cityName = city.nameRus;
+      var cityesList =  searchResults.find(".search-results__list");
+
+      cityesListState();
+      getWeatherData(city);
+    };
+
+
+    // Показать или спрятать список городов
+    function cityesListState() {
+      if ($("body").hasClass("search-active")) {
+        $("body").removeClass("search-active");
+      } else {
+        $("body").addClass("search-active");
+      }
     };
 
 
@@ -128,7 +214,7 @@
         // Иконки
         var prefix = 'wi wi-';
         var code = dataWeather.list[i].weather[0].id;
-        var icon = iconsObj[code].icon;
+        var icon = fullIconsList[code].icon;
 
         if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
           icon = 'day-' + icon;
@@ -140,27 +226,10 @@
     };
 
 
-    // ajax запрос на получение кода иконок
-    function getWeatherIcons() {
-      $.ajax({
-        url: isLocal() + "/icons.json",
-        success: function(weatherIcons) {
-          console.log("иконки загружены успешно");
-          iconsObj = weatherIcons;
-        },
-        error: function () {
-          console.log("при загрузке иконок произошла ошибка");
-        }
-      });
-    }
-
-
     // Клик по полю ввода города
     header.on("click", ".header__input", function() {
 
-      if(!$("body").hasClass("search-active")) {
-        $("body").addClass("search-active");
-      };
+      cityesListState();
 
       if($(".header__input").on("focus")) {
        // findCity();
@@ -193,10 +262,10 @@
         var cityesList =  searchResults.find(".search-results__list");
         cityesList.html("");
 
-        for (var i = 0; i < cityesObj.length; i++) {
+        for (var i = 0; i < fullCityesList.length; i++) {
 
-          cityNumber = cityesObj[i];
-          cityName = cityNumber.city;
+          cityNumber = fullCityesList[i];
+          cityName = cityNumber.nameRus;
           cityId = cityNumber.id;
 
           if (cityName.toLowerCase().indexOf(inputValue.toLowerCase()) != -1 && self.val().length != 0) {
@@ -208,56 +277,8 @@
     };
 
 
-    // Клик по элементу в списке городов
-
-    $(".search-results__container").on("click", ".search-results__element", function() {
-      var self = $(this);
-      sityListClick(self);
-    });
-
-
-    function sityListClick(city) {
-
-      var cityId = city.data("city-id");
-      var cityName = city.text();
-      var cityesList =  searchResults.find(".search-results__list");
-
-      getWeatherObj(cityId);
-
-      $("body").removeClass("search-active");
-      $(".header__input").val("");
-      $(".header__input").attr("placeholder", cityName);
-      $(".header__input").attr("data-city-id", cityId);
-    };
-
-
-    //
-    function setInputAttributes() {
-
-    }
-
-    // Получить список городов
-    function getCityesData() {
-      $.ajax({
-        url: isLocal() + "/cityes.json",
-        success: function(cityesData) {
-          console.log("данные о городах загружены успешно");
-          cityesObj = cityesData;
-          //getWeatherObj(); // add
-          createFullCityesList(cityesObj);
-        },
-        error: function() {
-          console.log("при загрузке данных о городах произошла ошибка");
-        },
-        complete: function() {
-
-        }
-      });
-    }
-
-
     function setDefaultSity() {
-      cityId = cityesObj[1].id;
+      cityId = fullCityesList[1].id;
     };
 
 
@@ -271,20 +292,6 @@
     };
 
 
-    //Создать полный список городов
-    function createFullCityesList(cityesData) {
-
-      var searchResultsContainer = searchResults.find(".search-results__container");
-      var cityesList =  '<ul class="search-results__list">'
-
-      for (var i = 0; i < cityesData.length; i++) {
-        cityesList += '<li class="search-results__element" data-city-id=' + cityesData[i].id + '>' + cityesData[i].city + '</li>';
-      };
-
-      cityesList += '</ul>';
-      searchResultsContainer.html(cityesList);
-    };
-
 
     // Обновить приложение
     $(document).on("click", "#clearCache", function(){
@@ -295,7 +302,7 @@
     // Клик по кнопке обновить
     footer.on("click", "#refreshButton", function(){
       var cityId = $(".header__input").attr("data-city-id");
-      getWeatherObj(cityId);
+      getWeatherData(cityId);
     });
 
 
