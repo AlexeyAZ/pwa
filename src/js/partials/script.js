@@ -25,7 +25,7 @@
 
     var fullCityesList = null;
     var fullIconsList = null;
-    var defaultCityNumber = 0;
+    var defaultCityNumber = 3;
 
 
     // Проверка как открыт сайт - локально или на сервере
@@ -116,7 +116,7 @@
     // Установить дополнительные атрибуты полю ввода
     function setInputAttributes(cityNumber) {
       search.val("");
-      search.attr("placeholder", fullCityesList[cityNumber].nameRus); 
+      search.attr("placeholder", fullCityesList[cityNumber].nameRus);
       search.attr("data-city-number", cityNumber);
     };
 
@@ -226,11 +226,22 @@
     search.on("click", function() {
       var self = $(this);
       body.addClass("search-active");
-
+      history.pushState('bar', 'Title', 'citiesList')
+      console.log($(location).attr("pathname"));
       if(search.on("focus")) {
         findCity();
       }
     });
+
+
+    // Обработчик нажатия кнопок "вперед" и "назад"
+    window.addEventListener('popstate', function(e){
+      if($(location).attr("pathname") == "/") {
+        body.removeClass("search-active");
+      } else {
+        console.log(2);
+      }
+    }, false);
 
 
     // Клик вне списка городов закрывает список
@@ -262,7 +273,7 @@
         var inputValue = self.val();
         var cityName;
 
-        
+
         for (var i = 0; i < cityesElementsList.length; i++) {
 
           cityName = cityesElementsList.eq(i).text();
