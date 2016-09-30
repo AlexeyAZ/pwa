@@ -17,15 +17,15 @@
     */
 
     // Глобальные переменные
+    var body = $(document.body);
     var header = $("#header");
     var footer = $("#footer");
+    var search = $("#search");
     var searchResults = $("#searchResults");
-    var kazanId = "551487";
 
     var fullCityesList = null;
     var fullIconsList = null;
-    var defaultCity;
-    //var activeCity;
+    var defaultCityNumber = 0;
 
 
     // Проверка как открыт сайт - локально или на сервере
@@ -38,6 +38,7 @@
         return "";
       }
     };
+
 
     // start
     setContentHeight();
@@ -61,9 +62,7 @@
           console.log("при загрузке списка городов произошла ошибка");
         },
         complete: function() {
-          defaultCity = fullCityesList[0];
-
-          getWeatherData(defaultCity);
+          getWeatherData(defaultCityNumber);
           createFullCityesList(fullCityesList);
         }
       });
@@ -88,15 +87,15 @@
 
 
     // Ajax запрос на openweathermap
-    function getWeatherData(city) {
+    function getWeatherData(cityNumber) {
 
-      var cityId = city.id;
+      var cityId = fullCityesList[cityNumber].id;
 
       $.ajax({
 
         url: "http://api.openweathermap.org/data/2.5/forecast/daily?id=" + cityId + "&units=metric&lang=ru&callback=&APPID=4d53f546b1a3fa35fec27b8c8c0d4920",
         beforeSend: function() {
-          setInputAttributes(city);
+          setInputAttributes(cityNumber);
           spinAnimate();
         },
         success: function(dataWeather) {
@@ -115,11 +114,10 @@
 
 
     // Установить дополнительные атрибуты полю ввода
-    function setInputAttributes(city) {
-      var input = header.find(".header__input");
-      input.val("");
-      input.attr("placeholder", city.nameRus);
-      input.attr("data-city-number", city.id);
+    function setInputAttributes(cityNumber) {
+      search.val("");
+      search.attr("placeholder", fullCityesList[cityNumber].nameRus); 
+      search.attr("data-city-number", cityNumber);
     };
 
 
@@ -135,36 +133,6 @@
 
       cityesList += '</ul>';
       searchResultsContainer.html(cityesList);
-    };
-
-
-    // Клик по элементу в списке городов
-
-    $(".search-results__container").on("click", ".search-results__element", function() {
-      var self = $(this);
-      sityListClick(self);
-    });
-
-
-    function sityListClick(cityElem) {
-
-      var cityNumber = cityElem.data("city-number");
-      var city = fullCityesList[cityNumber];
-      var cityName = city.nameRus;
-      var cityesList =  searchResults.find(".search-results__list");
-
-      cityesListState();
-      getWeatherData(city);
-    };
-
-
-    // Показать или спрятать список городов
-    function cityesListState() {
-      if ($("body").hasClass("search-active")) {
-        $("body").removeClass("search-active");
-      } else {
-        $("body").addClass("search-active");
-      }
     };
 
 
@@ -226,71 +194,89 @@
     };
 
 
-    // Клик по полю ввода города
-    header.on("click", ".header__input", function() {
+    // Клик по элементу в списке городов
+    $(".search-results__container").on("click", ".search-results__element", function() {
+      var self = $(this);
+      sityListClick(self);
+    });
+
+
+    function sityListClick(cityElem) {
+
+      var cityNumber = cityElem.data("city-number");
+      var cityName = fullCityesList[cityNumber].nameRus;
+      var cityesList =  searchResults.find(".search-results__list");
 
       cityesListState();
+      getWeatherData(cityNumber);
+    };
 
-      if($(".header__input").on("focus")) {
-       // findCity();
+
+    // Показать или спрятать список городов
+    function cityesListState() {
+      if (body.hasClass("search-active")) {
+        body.removeClass("search-active");
+      } else {
+        body.addClass("search-active");
+      }
+    };
+
+
+    // Клик по полю ввода города
+    search.on("click", function() {
+      var self = $(this);
+      body.addClass("search-active");
+
+      if(search.on("focus")) {
+        findCity();
       }
     });
 
 
     // Клик вне списка городов закрывает список
-    $("body").on("click", function(e) {
+    body.on("click", function(e) {
+
       var self = $(e.target);
 
       if (self.hasClass("search-results")) {
-        $("body").removeClass("search-active");
-        $(".header__input").blur();
+        body.removeClass("search-active");
+        search.val("")
+              .blur();
       };
     });
 
 
     // Поиск города по набранному тексту
     function findCity() {
-      $(".header__input").keyup(function() {
+
+      var cityesElementsList = searchResults.find(".search-results__element");
+
+      cityesElementsList.each(function(){
+        var self = $(this);
+        self.css("display", "list-item");
+      });
+
+      search.keyup(function() {
+
         var self = $(this);
         var inputValue = self.val();
-        var cityCounter = 0;
-
-        var cityNumber;
         var cityName;
-        var cityId;
 
-        var cityesList =  searchResults.find(".search-results__list");
-        cityesList.html("");
+        
+        for (var i = 0; i < cityesElementsList.length; i++) {
 
-        for (var i = 0; i < fullCityesList.length; i++) {
+          cityName = cityesElementsList.eq(i).text();
+          var inputValueLength = inputValue.length;
 
-          cityNumber = fullCityesList[i];
-          cityName = cityNumber.nameRus;
-          cityId = cityNumber.id;
+          if (cityName.toLowerCase().slice(0, inputValueLength) ==  inputValue) {
 
-          if (cityName.toLowerCase().indexOf(inputValue.toLowerCase()) != -1 && self.val().length != 0) {
-            createCityesList(cityName, cityId);
-            cityCounter++;
+            cityesElementsList.eq(i).css("display", "list-item");
+          } else {
+            cityesElementsList.eq(i).css("display", "none");
           }
         }
       });
     };
-
-
-    function setDefaultSity() {
-      cityId = fullCityesList[1].id;
-    };
-
-
-    //Создать список городов
-    function createCityesList(cityName, cityId) {
-
-      var searchResultsContainer = $(".search-results__container");
-      var cityesList =  $(".search-results__list");
-
-      cityesList.append('<li class="search-results__element" data-city-id=' + cityId + '>' + cityName + '</li>');
-    };
-
 
 
     // Обновить приложение
@@ -301,8 +287,8 @@
 
     // Клик по кнопке обновить
     footer.on("click", "#refreshButton", function(){
-      var cityId = $(".header__input").attr("data-city-id");
-      getWeatherData(cityId);
+      var refreshCityNumber = search.attr("data-city-number");
+      getWeatherData(refreshCityNumber);
     });
 
 
