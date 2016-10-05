@@ -1,6 +1,5 @@
-;(function($){
-  $(function(){
-
+;(function($) {
+  $(function() {
 
     // service worker
 
@@ -17,40 +16,62 @@
     */
 
     // Глобальные переменные
-    var body = $(document.body);
-    var header = $("#header");
-    var footer = $("#footer");
-    var search = $("#search");
-    var searchResults = $("#searchResults");
 
-    var fullCityesList = null;
-    var fullIconsList = null;
-    var defaultCityNumber = 3;
+      // Теги и классы
+      var body = $(document.body);
+      var header = $("#header");
+      var footer = $("#footer");
+      var search = $("#search");
+      var searchResults = $("#searchResults");
+      var menu = $("#menu");
+      var inputSize = $("#inputSize");
+      var headerArrow = $("#headerArrow");
+
+      // Навигация
+      var weatherFolder;
+      var mainPage = "main";
+      var citiesListPage = "citiesList";
+      var startHistoryLength;
+
+      // Объекты и их настройки
+      var fullCityesList = null;
+      var fullIconsList = null;
+      var defaultCityNumber = 3;
+
+      // Локально или сервер
+      var local = true;
 
 
-    // Проверка как открыт сайт - локально или на сервере
-    var local = true;
+    // Старт приложения
+    start();
 
-    function isLocal() {
-      if (!local) {
-        return "/weather";
-      } else {
-        return "";
-      }
+
+    // Функция старта
+    function start() {
+      isLocal();
+
+      setHistoryState();
+      setContentHeight();
+      getCityesData();
     };
 
 
-    // start
-    setContentHeight();
-    getCityesData();
+    // Проверка как открыт сайт - локально или на сервере
+
+    function isLocal() {
+      if (!local) {
+        weatherFolder = "/weather/";
+      } else {
+        weatherFolder = "/";
+      };
+    };
 
 
     // Получить список городов
     function getCityesData() {
-
       $.ajax({
 
-        url: isLocal() + "/cityes.json",
+        url: weatherFolder + "cityes.json",
         beforeSend: function() {
           getWeatherIcons();
         },
@@ -74,7 +95,7 @@
 
       $.ajax({
 
-        url: isLocal() + "/icons.json",
+        url: weatherFolder + "icons.json",
         success: function(weatherIcons) {
           console.log("список иконок загружен успешно");
           fullIconsList = weatherIcons;
@@ -115,9 +136,18 @@
 
     // Установить дополнительные атрибуты полю ввода
     function setInputAttributes(cityNumber) {
+      var placeholderText = fullCityesList[cityNumber].nameRus;
+
       search.val("");
-      search.attr("placeholder", fullCityesList[cityNumber].nameRus);
+      search.attr("placeholder", placeholderText);
       search.attr("data-city-number", cityNumber);
+
+      inputSize.text(placeholderText);
+      var inputSizeLeft = inputSize.position().left;
+      var inputSizeWidth = inputSize.width();
+      var inputSizeOffset = inputSizeLeft + inputSizeWidth;
+      headerArrow.css({"left": inputSizeOffset + 5});
+      //headerArrow.show();
     };
 
 
@@ -196,8 +226,21 @@
 
     // Клик по элементу в списке городов
     $(".search-results__container").on("click", ".search-results__element", function() {
+
       var self = $(this);
+      var cityesElementsList = searchResults.find(".search-results__element");
+
       sityListClick(self);
+
+      // Сделать все города из списка видимыми через определенный интервал
+      setTimeout(function(){
+        cityesElementsList.each(function(){
+          var self = $(this);
+          if (self.css("display") == "none") {
+            self.css("display", "list-item");
+          }
+        });
+      }, 500);
     });
 
 
@@ -207,41 +250,25 @@
       var cityName = fullCityesList[cityNumber].nameRus;
       var cityesList =  searchResults.find(".search-results__list");
 
-      cityesListState();
+      body.removeClass("search-active");
+      history.replaceState(mainPage, null);
       getWeatherData(cityNumber);
     };
 
 
-    // Показать или спрятать список городов
-    function cityesListState() {
-      if (body.hasClass("search-active")) {
-        body.removeClass("search-active");
-      } else {
-        body.addClass("search-active");
-      }
-    };
-
-
     // Клик по полю ввода города
-    search.on("click", function() {
+    search.on("click", function(e) {
       var self = $(this);
       body.addClass("search-active");
-      history.pushState('bar', 'Title', 'citiesList')
-      console.log($(location).attr("pathname"));
+      history.pushState(citiesListPage, null);
+      console.log("cityElemClicklength: " + history.length);
+
       if(search.on("focus")) {
         findCity();
-      }
+      };
+
+      //headerArrow.hide();
     });
-
-
-    // Обработчик нажатия кнопок "вперед" и "назад"
-    window.addEventListener('popstate', function(e){
-      if($(location).attr("pathname") == "/") {
-        body.removeClass("search-active");
-      } else {
-        console.log(2);
-      }
-    }, false);
 
 
     // Клик вне списка городов закрывает список
@@ -253,26 +280,25 @@
         body.removeClass("search-active");
         search.val("")
               .blur();
+        history.replaceState(mainPage, null);
+        console.log("missCityListlength: " + history.length);
       };
+
+      if (!self.hasClass("menu__btn") && menu.hasClass("menu_active")) {
+        menu.removeClass("menu_active");
+      }
     });
 
 
     // Поиск города по набранному тексту
     function findCity() {
 
-      var cityesElementsList = searchResults.find(".search-results__element");
-
-      cityesElementsList.each(function(){
-        var self = $(this);
-        self.css("display", "list-item");
-      });
-
       search.keyup(function() {
 
         var self = $(this);
         var inputValue = self.val();
         var cityName;
-
+        var cityesElementsList = searchResults.find(".search-results__element");
 
         for (var i = 0; i < cityesElementsList.length; i++) {
 
@@ -290,10 +316,52 @@
     };
 
 
-    // Обновить приложение
-    $(document).on("click", "#clearCache", function(){
-      window.location.reload(true);
+    // Клик по кнопке меню
+    menu.on("click", function(e){
+      var self = $(e.target);
+
+      if (self.is(".menu__btn") || self.closest(".menu__btn").length > 0) {
+        if (menu.hasClass("menu_active")) {
+          menu.removeClass("menu_active");
+        } else {
+          menu.addClass("menu_active");
+        }
+      };
+
+      if (self.hasClass("menu__list-item_refresh")) {
+        window.location.reload(true);
+      };
     });
+
+
+    // При загрузке сайта добавить в историю запись, о нахождении на главной странице
+    function setHistoryState() {
+      console.log("firstLoadHistoryLength: " + history.length);
+      if (location.pathname == weatherFolder + "index.html" ||
+          location.pathname == weatherFolder) {
+        history.pushState(mainPage, null);
+        startHistoryLength = history.length;
+        console.log("afterFirstLoadlength: " + history.length);
+      }
+    };
+
+
+    // Обработчик нажатия кнопок "вперед" и "назад"
+    window.addEventListener('popstate', function(e) {
+      console.log("beforePushBack: " + history.length);
+      var historyLength = -(+history.length - startHistoryLength);
+      console.log("afterPushBack: " + history.length);
+
+      if (history.state == mainPage && body.hasClass("search-active")) {
+        body.removeClass("search-active");
+        search.val("")
+              .blur();
+        history.replaceState(mainPage, null);
+      } else {
+        history.go(historyLength);
+        console.log("backButtonHisoryLength: " + history.length);
+      }
+    }, false);
 
 
     // Клик по кнопке обновить

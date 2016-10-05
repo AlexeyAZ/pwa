@@ -17,6 +17,7 @@ var path = {
     //Готовые после сборки файлы
     build: {
         html: 'build/',
+        favicon: 'build/',
         json: 'build/',
         js: 'build/js/',
         css: 'build/css/',
@@ -28,6 +29,7 @@ var path = {
         //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         //Синтаксис img/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
         html: 'src/*.html',
+        favicon: 'src/favicon.ico',
         json: 'src/*.json',
         js: 'src/js/main.js',
         less: 'src/less/style.less',
@@ -37,6 +39,7 @@ var path = {
     //За изменением каких файлов необходимо наблюдать
     watch: {
         html: 'src/**/*.html',
+        favicon: 'src/favicon.ico',
         json: 'src/*.json',
         js: 'src/js/**/*.js',
         less: 'src/less/**/*.less',
@@ -62,6 +65,12 @@ gulp.task('html:build', function () {
     gulp.src(path.src.html) //Выберем файлы по нужному пути
         .pipe(rigger()) //Прогоним через rigger
         .pipe(gulp.dest(path.build.html)) //Выплюнем их в папку build
+        .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
+});
+
+gulp.task('favicon:build', function () {
+    gulp.src(path.src.favicon) //Выберем файлы по нужному пути
+        .pipe(gulp.dest(path.build.favicon)) //Выплюнем их в папку build
         .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
 });
 
@@ -111,6 +120,7 @@ gulp.task('fonts:build', function() {
 
 gulp.task('build', [
     'html:build',
+    'favicon:build',
     'json:build',
     'js:build',
     'less:build',
@@ -121,6 +131,9 @@ gulp.task('build', [
 gulp.task('watch', function(){
     watch([path.watch.html], function(event, cb) {
         gulp.start('html:build');
+    });
+    watch([path.watch.json], function(event, cb) {
+        gulp.start('favicon:build');
     });
     watch([path.watch.json], function(event, cb) {
         gulp.start('json:build');

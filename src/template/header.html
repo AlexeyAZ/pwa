@@ -1,7 +1,20 @@
 <header class="header" id="header">
+  <div class="header__input-size" id="inputSize">Казань</div>
+  <div class="header__arrow" id="headerArrow"></div>
   <div class="search header__search">
       <div class="header__search-icon"></div>
       <input class="header__input" id="search" autocomplete="off">
-      <!--<div class="header__clear-btn"></div>-->
+  </div>
+  <div class="header__menu menu" id="menu">
+    <div class="menu__btn">
+      <svg class="menu__icon">
+        <circle class="menu__icon-dot" cx="50%" cy="30%" r="3px"></circle>
+        <circle class="menu__icon-dot" cx="50%" cy="50%" r="3px"></circle>
+        <circle class="menu__icon-dot" cx="50%" cy="70%" r="3px"></circle>
+      </svg>
+    </div>
+    <ul class="menu__list">
+      <li class="menu__list-item menu__list-item_refresh">Обновить</li>
+    </ul>
   </div>
 </header>

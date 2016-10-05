@@ -13,16 +13,6 @@
 .card-template {
     display: none;
 }
-.clear-cache-btn {
-    background-color: green;
-    border-radius: 50%;
-    position: fixed;
-    left: 20px;
-    bottom: 20px;
-    height: 40px;
-    width: 40px;
-    z-index: 10;
-}
 html {
     background-color: @bg-main;
     font-family: "Roboto", sans-serif;
@@ -37,15 +27,20 @@ body {
     height: 100%;
 }
 .search-active {
-    .header__clear-btn {
-        display: block;
+    .header__arrow {
+        transition: all 0.3s linear 0s;
+        opacity: 0;
+        margin-left: 35px;
     }
     .header__search-icon {
         opacity: 1;
     }
     .header__input {
-        font-weight: 100;
         padding-left: 50px;
+        &:focus,
+        &:hover {
+            cursor: text;
+        }
     }
     .search-results {
         opacity: 1;
@@ -58,7 +53,7 @@ body {
 
 //search-results
 .search-results {
-    transition: all 0.3s linear;
+    transition: all @transition-searc-results linear;
     background-color: @bg-search-results;
     overflow: hidden;
     opacity: 0;
@@ -73,7 +68,6 @@ body {
     transition: all 0.3s linear;
     transform: translateX(-100%);
     background-color: white;
-    //padding: 20px 0;
     overflow: auto;
     height: 100%;
     width: 80%;
@@ -81,10 +75,9 @@ body {
 .search-results__element {
     cursor: pointer;
     font-size: 1.2em;
-    //margin: 10px 0;
-    padding: 15px;
+    padding: @padding-main;
     &:hover {
-        background-color: lighten(@bg-header, 30%);
+        background-color: @hover-main; //lighten(@bg-header, 30%)
     }
 }
 .content {
@@ -99,7 +92,7 @@ body {
     align-items: center;
     align-content: space-between;
     margin: 0 auto;
-    padding: 15px;
+    padding: @padding-main;
     height: 100%;
 }
 .card {
