@@ -1,11 +1,30 @@
 ;(function($) {
   $(function() {
 
+
+      window.addEventListener('beforeinstallprompt', function(e) {
+        // beforeinstallprompt Event fired
+        console.log(1);
+        // e.userChoice will return a Promise. 
+        // For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
+        e.userChoice.then(function(choiceResult) {
+
+            console.log(choiceResult.outcome);
+
+            if(choiceResult.outcome == 'dismissed') {
+            console.log('User cancelled home screen install');
+            }
+            else {
+            console.log('User added to home screen');
+            }
+        });
+    });
+
     // service worker
 
-    /*
+    
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+      navigator.serviceWorker.register('/js/sw.js').then(function(registration) {
         // Registration was successful
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
       }).catch(function(err) {
@@ -13,7 +32,6 @@
         console.log('ServiceWorker registration failed: ', err);
       });
     }
-    */
 
     // Глобальные переменные
 

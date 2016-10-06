@@ -27,6 +27,7 @@
     "gulp-sourcemaps": "*",
     "gulp-uglify": "*",
     "gulp-watch": "*",
-    "imagemin-pngquant": "*"
+    "imagemin-pngquant": "*",
+    "pump": "^1.0.1"
   }
 }

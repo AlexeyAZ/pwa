@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     pngquant = require('imagemin-pngquant'), // сжатие png изображений //
     del = require('del'), // права на удаление папок и файлов //
     browserSync = require("browser-sync"), // обновление окна браузера
-    cssnano = require('gulp-cssnano') // сжатие css
+    cssnano = require('gulp-cssnano'), // сжатие css
+    pump = require('pump')
 ;
 var path = {
     //Готовые после сборки файлы
@@ -31,7 +32,7 @@ var path = {
         html: 'src/*.html',
         favicon: 'src/favicon.ico',
         json: 'src/*.json',
-        js: 'src/js/main.js',
+        js: 'src/js/*.js',
         less: 'src/less/style.less',
         img: 'src/img/**/*.*',
         fonts: 'src/fonts/**/*.*'
@@ -80,15 +81,20 @@ gulp.task('json:build', function () {
         .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
 });
 
-gulp.task('js:build', function () {
-    gulp.src(path.src.js) //Найдем наш main файл
-        .pipe(rigger()) //Прогоним через rigger
-        .pipe(sourcemaps.init()) //Инициализируем sourcemap
-        .pipe(uglify()) //Сожмем наш js
-        .pipe(sourcemaps.write()) //Пропишем карты
-        .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
-        .pipe(reload({stream: true})); //И перезагрузим сервер
+gulp.task('js:build', function (cb) {
+    pump([
+        gulp.src(path.src.js), //Найдем наш main файл
+            rigger(), //Прогоним через rigger
+            sourcemaps.init(), //Инициализируем sourcemap
+            uglify(), //Сожмем наш js
+            sourcemaps.write(), //Пропишем карты
+            gulp.dest(path.build.js), //Выплюнем готовый файл в build
+            reload({stream: true}) //И перезагрузим сервер
+    ],
+    cb
+  );
 });
+
 
 gulp.task('less:build', function () {
     gulp.src(path.src.less) //Выберем наш main.less
