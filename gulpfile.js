@@ -86,7 +86,7 @@ gulp.task('js:build', function (cb) {
         gulp.src(path.src.js), //Найдем наш main файл
             rigger(), //Прогоним через rigger
             sourcemaps.init(), //Инициализируем sourcemap
-            uglify(), //Сожмем наш js
+            //uglify(), //Сожмем наш js
             sourcemaps.write(), //Пропишем карты
             gulp.dest(path.build.js), //Выплюнем готовый файл в build
             reload({stream: true}) //И перезагрузим сервер

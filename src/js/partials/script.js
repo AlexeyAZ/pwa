@@ -57,7 +57,7 @@
       var defaultCityNumber = 3;
 
       // Локально или сервер
-      var local = true;
+      var local = false;
 
 
     // Старт приложения
@@ -78,7 +78,7 @@
 
     function isLocal() {
       if (!local) {
-        weatherFolder = "/weather/";
+        weatherFolder = "/local_sites/weatherapp/";
       } else {
         weatherFolder = "/";
       };
